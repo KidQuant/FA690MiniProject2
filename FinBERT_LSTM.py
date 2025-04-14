@@ -19,9 +19,8 @@ learning_rate = 0.02
 
 # loading stock price and news data
 stock_data = pd.read_csv("data/price.csv")
-news_data = pd.read_csv("data/news_w_sentiment.csv")
+news_data = pd.read_csv("data/news_w_sentiment2.csv")
 
-news_data['FinBERT score'] = news_data['positive'] - news_data['negative']
 
 stock_column = ['close']
 news_column = ['FinBERT score']
