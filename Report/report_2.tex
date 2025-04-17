@@ -69,12 +69,11 @@
 
 \section*{Introduction}
 
-Trend-following strategies -- like moving averages or time-series momentum -- are widely used in practice and have been successful across many different asset classes for decades. Despite their popularity, whether or not investors can generate excess remains questionable. Many existing trend signals are heuristic-based and chosen based on intuition or empirical trial-and-error rather than a grounded, model-based approach. This motivates our question:  Can visual patterns in historical price charts predict whether a stock will rise or fall over the next 5 days?
+Financial sentiment analysis has become a critical tool for investors, financial institutions, and analysts, enabling them to glean actionable insights from vast amounts of textual data. Recent advancements in deep learning, particularly transformer-based architectures, have significantly improved sentiment models' accuracy and contextual understanding. FinBERT, a finance-specific adaptation of BERT, further enhances predictive capabilities by addressing the domain-specific vocabulary, nuanced language patterns, and contextual subtleties inherent in financial news, thus leading to more precise sentiment predictions.
 
-With the rise of machine learning, there is an opportunity to learn price trends directly from data rather than imposing rigid parametric structures (like fixed-length moving averages). We examine price trends through the lens of supervised learning, treating the trend signal as something that can be trained to predict returns. We aim to bridge the gap between statistical modeling and practical trading signals. We will generate a framework that generalizes popular tend signals and allows for a data-driven optimal trend filter, which improves return predictability and economic outcomes.
+This report explores the application and performance of transformer-based models, focusing specifically on variations derived from BERT and FinBERT frameworks in the realm of financial news sentiment analysis. We investigate how leveraging fine-tuning techniques and fully connected neural networks can enhance the interpretability and accuracy of sentiment classification tasks. Given the recent surge in complexity and volume of financial news data, transformer-based sentiment analysis models represent a promising direction in deep learning. They demonstrate their capacity to capture intricate semantic relationships that traditional models have struggled with, thereby supporting more informed financial decision-making processes.
 
 \section*{Data \& Preprocessing}
-\subsection*{Data Description}
 
 For the project, we use two different datasets that are both structured and unstructured. The structured dataset stock information, while the unstructured involves news articles related to the stock in our analysis.
 
@@ -338,6 +337,8 @@ Figure (\ref{fig:outcome}) shows a sample prediction for one of the articles in 
 
 \section*{Sentiment and Market Trend}
 
+Finally, we get to the main purpose of our analysis: Can we use the sentiment from financial news to help us predict stock market movements or prices? We have computed the average stock return for our test interval (from January 1, 2020, and onward) and grouped it with the average financial Wall Street sentiment for the same period (which we classify as the financial news). Using these two variables, we compare the monthly sentiment using a visual analysis. Figures (\ref{fig:pretrain_time_regression}) and (\ref{fig:finetune_time_regression}) outline the regression analysis (Left) and time series analysis (Right) for both the pre-trained and fine-tuned FinBERT models. The fine-tuned model utilizes the hyperparameters of model D from the earlier experiment.
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1\linewidth]{plots/regression_time_pretrain.png}
@@ -345,6 +346,7 @@ Figure (\ref{fig:outcome}) shows a sample prediction for one of the articles in 
 	\label{fig:pretrain_time_regression}
 \end{figure}
 
+As we can see from the pre-trained analysis, we have an $R^2$ of 0, which suggests that there is no linear relationship between the sentiment of a financial news article and the monthly S\&P 500 returns. We've already intuitively known this from previous analysis with FinBERT, as sentiment scores are too complex to have a linear relationship. The Time Series plot on the right shows no consistent pattern or correlation. Both series fluctuate independently, with peaks and troughs in sentiment often not aligned with similar movements in stock returns.
 
 \begin{figure}[h]
 	\centering
@@ -352,6 +354,9 @@ Figure (\ref{fig:outcome}) shows a sample prediction for one of the articles in 
 	\caption{Regression and Time Series Plot for the Fine-Tuned FinBERT Model}
 	\label{fig:finetune_time_regression}
 \end{figure}
+
+
+On the other hand, from the fine-tuned model from Figure (\ref{fig:finetune_time_regression}), we can see that there is a negative correlation between financial news sentiment and the S\&P 500 returns. One would assume that the more positive the financial news (score closer to 1 implies a more positive sentiment), the greater the stock market returns. Instead, we see an inverse relationship in both the regression and time series plots. This suggests the fine-tuned sentiment scores from FinBERT may carry valuable predictive information that could be leveraged in forecasting or trading strategies, despite the paradoxical nature of the results.
 
 
 \section*{Conclusion}

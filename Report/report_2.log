@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.4.13)  17 APR 2025 00:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.4.13)  17 APR 2025 01:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1081,58 +1081,55 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [1
 
 {C:/Users/drebi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-<plots/descriptive.png, id=17, 1073.2095pt x 860.013pt>
+<plots/descriptive.png, id=16, 1073.2095pt x 860.013pt>
 File: plots/descriptive.png Graphic file (type png)
 <use plots/descriptive.png>
-Package pdftex.def Info: plots/descriptive.png  used on input line 91.
+Package pdftex.def Info: plots/descriptive.png  used on input line 90.
 (pdftex.def)             Requested size: 422.77664pt x 338.78938pt.
  [2 <./plots/descriptive.png>] [3] [4] [5]
-Overfull \hbox (4.11368pt too wide) in paragraph at lines 141--142
+Overfull \hbox (4.11368pt too wide) in paragraph at lines 140--141
 []\OT1/cmr/m/n/12 We also im-ple-ment Hug-ging-Face's dataset in-fras-truc-ture
 , a so-phis-ti-cated pro-cess-ing frame-
  []
 
 [6]
-Overfull \hbox (59.92014pt too wide) in paragraph at lines 172--182
+Overfull \hbox (59.92014pt too wide) in paragraph at lines 171--181
  [][] 
  []
 
 [7] [8] [9] [10] [11]
-Overfull \hbox (21.496pt too wide) in paragraph at lines 289--302
+Overfull \hbox (21.496pt too wide) in paragraph at lines 288--301
  [][] 
  []
 
 [12]
-<plots/outcome.png, id=111, 584.93532pt x 173.14688pt>
+<plots/outcome.png, id=110, 584.93532pt x 173.14688pt>
 File: plots/outcome.png Graphic file (type png)
 <use plots/outcome.png>
-Package pdftex.def Info: plots/outcome.png  used on input line 332.
+Package pdftex.def Info: plots/outcome.png  used on input line 331.
 (pdftex.def)             Requested size: 469.75502pt x 139.05666pt.
  [13 <./plots/outcome.png>]
-<plots/regression_time_pretrain.png, id=121, 839.0547pt x 425.6703pt>
+<plots/regression_time_pretrain.png, id=122, 839.0547pt x 425.6703pt>
 File: plots/regression_time_pretrain.png Graphic file (type png)
 <use plots/regression_time_pretrain.png>
 Package pdftex.def Info: plots/regression_time_pretrain.png  used on input line
- 343.
+ 344.
 (pdftex.def)             Requested size: 469.75502pt x 238.32178pt.
-<plots/regression_time_finetune.png, id=122, 828.9369pt x 426.393pt>
+ [14 <./plots/regression_time_pretrain.png>]
+<plots/regression_time_finetune.png, id=131, 828.9369pt x 426.393pt>
 File: plots/regression_time_finetune.png Graphic file (type png)
 <use plots/regression_time_finetune.png>
 Package pdftex.def Info: plots/regression_time_finetune.png  used on input line
- 351.
+ 353.
 (pdftex.def)             Requested size: 469.75502pt x 241.64119pt.
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[14 <./plots/regression_time_pretrain.png>] [15 <./plots/regression_time_finetu
-ne.png>] (report_2.aux)
+[15 <./plots/regression_time_finetune.png>] (report_2.aux)
 Package rerunfilecheck Info: File `report_2.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 35257 strings out of 476326
- 817456 string characters out of 5787722
+ 35256 strings out of 476326
+ 817445 string characters out of 5787722
  1863660 words of memory out of 5000000
  55074 multiletter control sequences out of 15000+600000
  521387 words of font info for 67 fonts, out of 8000000 for 9000
@@ -1150,9 +1147,9 @@ ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/dre
 bi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/
 Users/drebi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.
 pfb>
-Output written on report_2.pdf (15 pages, 387754 bytes).
+Output written on report_2.pdf (15 pages, 390045 bytes).
 PDF statistics:
- 193 PDF objects out of 1000 (max. 8388607)
- 58 named destinations out of 1000 (max. 500000)
+ 195 PDF objects out of 1000 (max. 8388607)
+ 57 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 
