@@ -97,11 +97,11 @@ def process_news_batch(news_df, batch_size=100):
         print(f"Processing batch {i//batch_size + 1}/{(len(news_df)-1)//batch_size + 1}")
         
         for idx in range(len(batch)):
-            news_list = batch.iloc[idx, 1:].tolist()
-            news_list = [str(i) for i in news_list if i != '0' and pd.notna(i)]
+            news_list = batch.iloc[idx]['title']
+            news_body = batch.iloc[idx]['body']
             
             # Get sentiment scores
-            score_BERT = FinBERT_sentiment_score(news_list)
+            score_BERT = FinBERT_sentiment_score(news_body)
             score_VADER = VADER_sentiment_score(news_list)
             
             BERT_sentiment.append(score_BERT)

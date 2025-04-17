@@ -1,0 +1,552 @@
+\documentclass[11pt,a4paper]{article}
+
+% -----------------------
+% Packages
+% -----------------------
+\usepackage[utf8]{inputenc}   % UTF-8 encoding
+\usepackage[T1]{fontenc}      % Better font encoding
+\usepackage{lmodern}          % Latin Modern font
+\usepackage{amsmath,amssymb}  % Math packages
+\usepackage{graphicx}         % Including images
+\usepackage{geometry}         % Page margins
+\usepackage{setspace}         % Line spacing
+\usepackage{hyperref}         % For hyperlinks
+\usepackage{titlesec}         % Customizing titles
+\usepackage{fancyhdr}         % Header and footer customization
+\usepackage{listings}         % For code listings
+\usepackage{xcolor}           % For custom colors
+\usepackage{subcaption}       % For subfigures
+\usepackage{booktabs}         % For professional tables
+\usepackage{tabularx}         % For flexible tables
+\usepackage{siunitx}          % For numerical alignment
+\usepackage{caption}          % For table captions
+\usepackage{float}            % For figure placement
+\usepackage{mathtools}        % Additional math symbols
+\usepackage{pdfpages}
+
+% -----------------------
+% Page Layout
+% -----------------------
+\geometry{
+  left=1in,
+  right=1in,
+  top=1in,
+  bottom=1in,
+}
+
+% Line spacing
+\onehalfspacing
+
+% -----------------------
+% Custom Colors
+% -----------------------
+\definecolor{mygreen}{RGB}{28,172,0}    % Comment color
+\definecolor{mygray}{RGB}{242,242,242}  % Background color for listings
+\definecolor{mymauve}{RGB}{170,55,241}  % String color
+
+% -----------------------
+% Listings Configuration
+% -----------------------
+\lstset{ %
+  language=Python,                     % Set Python as the language
+  backgroundcolor=\color{mygray}, % Background color
+  basicstyle=\small\ttfamily,     % Font style
+  keywordstyle=\color{blue},      % Keyword color
+  commentstyle=\color{mygreen},   % Comment color
+  stringstyle=\color{mymauve},    % String color
+  numbers=left,                   % Line numbers on the left
+  numberstyle=\tiny\color{gray},  % Line number style
+  stepnumber=1,                   % Line number step
+  numbersep=5pt,                  % Distance from code to line numbers
+  breaklines=true,                % Line breaking
+  breakatwhitespace=true,         % Break at whitespace
+  showspaces=false,               % Do not show spaces
+  showstringspaces=false,         % Do not show string spaces
+  showtabs=false,                 % Do not show tabs
+  frame=single,                   % Frame around code
+  captionpos=b,                   % Caption position
+  tabsize=2                       % Tab size
+}
+
+% -----------------------
+% Header and Footer
+% -----------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{FE542 Times Series with Applications in Finance}
+\fancyhead[R]{Professor Pal}
+\fancyfoot[C]{\thepage}
+
+% -----------------------
+% Section Formatting
+% -----------------------
+\titleformat{\section}
+  {\bfseries\Large}{\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\bfseries\large}{\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+  {\bfseries}{\thesubsubsection}{1em}{}
+
+
+% -----------------------
+% Begin Document
+% -----------------------
+\begin{document}
+
+% -----------------------
+% Cover Page
+% -----------------------
+\begin{titlepage}
+    \centering
+    % Title at the Top
+    \vspace*{1cm}\href{}{}
+    \textbf{\LARGE FE542 Times Series with Applications in Finance} \\
+    \vspace{0.5cm}
+    \textbf{\Large Project Report 1} \\
+    \vspace{1cm}
+    \textbf{\Large Group 1} \\
+    \vspace{1.5cm}
+
+    % University Logo in the Middle
+    \includegraphics[width=0.4\textwidth]{Logo Stevens.png} \\
+    \vspace{1.5cm}
+
+    % Instructor and Semester Information
+    \begin{tabular}{rl}
+        \textbf{Instructor:} & Professor Pal \\
+        \textbf{Semester:} & Spring 2024 \\
+    \end{tabular} \\
+    \vspace{2cm}
+
+    % Group Members at the Bottom
+    \begin{tabular}{ll}
+        \textbf{Group Members:} & Andre Sealy, Federica Malamisura, and Swapnil Pant\\
+    \end{tabular} \\
+    \vspace{0.5cm}
+
+    % Optional: Additional Spacing to Ensure Content Fits Well
+    \vfill
+\end{titlepage}
+
+
+\newpage
+
+\begin{abstract}
+In this report, we analyze a financial time series dataset (Spot and Futures Prices for Gold) covering at least 15 years of data. The goal is to provide hands-on experience in retrieving, processing, and examining financial data, implementing ARIMA and GARCH models, performing multi-variate analyses such as VAR or VECM, and computing Value-at-Risk (VaR). We highlight the key statistical characteristics of the dataset and provide managerial insights for investment and risk management.
+\end{abstract}
+
+% -----------------------
+% Table of Contents
+% -----------------------
+\newpage
+\tableofcontents
+\newpage
+
+
+
+\section{Introduction}
+\label{sec:intro}
+The purpose of this project is to explore the time series properties of a chosen asset (in this case, Gold: the GLD ETF for spot and the GC=F futures contract) over a period of at least 15 years. The main objectives include:
+\begin{itemize}
+    \item Basic statistical examination of the time series (descriptive statistics, unit-root tests, etc.).
+    \item Visualization of the time series and their transformed series (log returns).
+    \item Analysis of the relationships between spot and futures prices.
+    \item Construction and evaluation of ARIMA models for both the prices and returns.
+    \item Construction and evaluation of GARCH models for volatility analysis.
+    \item Multi-variate time series modeling (VAR or VECM) for analyzing interrelationships between spot and futures.
+    \item Value-at-Risk (VaR) computation and interpretation.
+\end{itemize}
+
+This report is structured to follow the Guidelines for FA542 as described in the project requirements and includes an overview of the asset, the methodology, and a discussion of the relevant results.
+
+\section{Overview of the Asset and the Market}
+\label{sec:overview}
+\subsection{Asset Description}
+Our analysis focuses on Gold. We use:
+\begin{itemize}
+    \item \textbf{GLD (ETF tracking gold)} for the spot prices.
+    \item \textbf{GC=F (Gold Futures)} for the futures prices.
+\end{itemize}
+Gold is a highly liquid commodity with ample historical data, making it suitable for time series analysis. Gold has been traditionally considered a safe-haven asset, often moving inversely to indicators of market risk and inflation expectations.
+
+\subsection{Historical Data and Data Sources}
+We retrieve data from online sources (e.g., Yahoo Finance via the \texttt{quantmod} library in R) for the historical timeline starting from \texttt{2008-01-01} to \texttt{Sys.Date()} (i.e., the most recent date available at the time of analysis). The sample thus covers more than 15 years of data, meeting the project requirement.
+
+\section{R Script and Outputs}
+\label{sec:script}
+
+Below is the complete R script (including all outputs) that was used for data retrieval, cleaning, statistical analysis, model fitting, forecasting, and risk analysis. It is provided in a verbatim environment to facilitate direct copying.
+
+\textbf{Note:} The script includes commentary on each section, describing the steps performed. After this code listing, we present explanations and interpretations of the results in detail.
+
+\subsection{Full R Script}
+
+\begin{lstlisting}[language=R]
+# ===================================================================
+# FA542: Time Series with Applications to Finance
+# Project: Analysis of Financial Time Series (Gold Example)
+# Asset: Gold
+# Spot Price: GLD (ETF tracking gold)
+# Futures Price: GC=F (Gold futures)
+# ===================================================================
+
+# Load Required Libraries
+library(quantmod)             # Data retrieval and charting
+library(forecast)             # ARIMA modeling & forecasting
+library(tseries)              # Unit-root tests
+library(urca)                 # Cointegration tests (Johansen)
+library(vars)                 # VAR modeling
+library(rugarch)              # GARCH modeling
+library(PerformanceAnalytics) # Risk metrics and VaR
+library(ggplot2)             # Enhanced plotting
+library(zoo)                  # For na.approx()
+
+# ===================================================================
+# 1. Data Retrieval and Preparation
+# ===================================================================
+start_date <- as.Date("2008-01-01")  # At least 15 years of data
+end_date   <- Sys.Date()
+
+# Retrieve Spot Price Data (GLD) using auto.assign=FALSE to avoid global objects
+spot <- getSymbols("GLD", from = start_date, to = end_date, auto.assign = FALSE)[, "GLD.Adjusted"]
+spot <- na.omit(spot)  # Remove any missing values
+
+# Retrieve Futures Price Data (GC=F) using auto.assign=FALSE
+futures <- getSymbols("GC=F", from = start_date, to = end_date, auto.assign = FALSE)[, "GC=F.Adjusted"]
+
+# Fill missing values using linear interpolation then omit any remaining NAs
+futures <- na.approx(futures)
+futures <- na.omit(futures)
+
+# ===================================================================
+# 2. Basic Statistical Examination
+# ===================================================================
+cat("=== Descriptive Statistics for Spot Prices ===\n")
+print(summary(spot))
+cat("Standard Deviation (Spot):", sd(spot), "\n\n")
+
+cat("=== Descriptive Statistics for Futures Prices ===\n")
+print(summary(futures))
+cat("Standard Deviation (Futures):", sd(futures), "\n\n")
+
+# ===================================================================
+# 3. Visual Behavior of the Time Series
+# ===================================================================
+# Plot Spot Price Time Series
+chartSeries(spot, theme = chartTheme("white"), name = "Spot Price (GLD)")
+
+# Plot Futures Price Time Series
+chartSeries(futures, theme = chartTheme("white"), name = "Futures Price (GC=F)")
+
+# ===================================================================
+# 4. Returns Analysis and Relationship Over Different Time Periods
+# ===================================================================
+# Compute Log Returns and remove any resulting NAs
+spot_returns <- na.omit(diff(log(spot)))
+futures_returns <- na.omit(diff(log(futures)))
+
+# Plot Returns Time Series
+chartSeries(spot_returns, theme = chartTheme("white"), name = "Spot Returns")
+chartSeries(futures_returns, theme = chartTheme("white"), name = "Futures Returns")
+
+# Merge Returns for Comparison and ensure no NAs remain
+returns_df <- merge(spot_returns, futures_returns)
+returns_df <- na.omit(returns_df)
+colnames(returns_df) <- c("Spot_Returns", "Futures_Returns")
+
+# Scatter Plot of Spot vs. Futures Returns
+ggplot(as.data.frame(returns_df), aes(x = Spot_Returns, y = Futures_Returns)) +
+  geom_point(color = "blue", alpha = 0.5) +
+  labs(title = "Scatter Plot of Spot vs. Futures Returns",
+       x = "Spot Returns",
+       y = "Futures Returns") +
+  theme_minimal()
+
+# Calculate Correlation Between Returns
+correlation <- cor(returns_df$Spot_Returns, returns_df$Futures_Returns)
+cat("Correlation between Spot and Futures Returns:", correlation, "\n\n")
+
+# ===================================================================
+# 5. Unit-Root Tests
+# ===================================================================
+cat("=== Augmented Dickey-Fuller (ADF) Tests ===\n")
+
+cat("ADF Test for Spot Prices:\n")
+suppressWarnings(print(adf.test(spot)))
+
+cat("ADF Test for Futures Prices:\n")
+suppressWarnings(print(adf.test(futures)))
+
+cat("ADF Test for Spot Returns:\n")
+suppressWarnings(print(adf.test(spot_returns)))
+
+cat("ADF Test for Futures Returns:\n")
+suppressWarnings(print(adf.test(futures_returns)))
+cat("\n")
+
+# ===================================================================
+# 6. ARIMA Models and Forecasting
+# ===================================================================
+# ARIMA Modeling for Spot Prices
+spot_arima <- auto.arima(spot)
+cat("=== ARIMA Model for Spot Prices ===\n")
+summary(spot_arima)
+
+# Forecasting Spot Prices (Next 30 Days)
+spot_forecast <- forecast(spot_arima, h = 30)
+plot(spot_forecast, main = "30-Day Forecast of Spot Prices")
+
+# ARIMA Modeling for Spot Returns
+spot_ret_arima <- auto.arima(spot_returns)
+cat("=== ARIMA Model for Spot Returns ===\n")
+summary(spot_ret_arima)
+
+# Forecasting Spot Returns (Next 30 Days)
+spot_ret_forecast <- forecast(spot_ret_arima, h = 30)
+plot(spot_ret_forecast, main = "30-Day Forecast of Spot Returns")
+
+# ===================================================================
+# 7. GARCH Modeling for Conditional Variance
+# ===================================================================
+# Standard GARCH(1,1) Model for Spot Returns
+spec_garch <- ugarchspec(
+  variance.model = list(model = "sGARCH", garchOrder = c(1, 1)),
+  mean.model = list(armaOrder = c(1, 1), include.mean = TRUE),
+  distribution.model = "norm"
+)
+garch_fit <- ugarchfit(spec = spec_garch, data = spot_returns)
+cat("=== Standard GARCH(1,1) Model Fit for Spot Returns ===\n")
+print(garch_fit)
+
+# Alternative: eGARCH(1,1) Model for Spot Returns
+spec_egarch <- ugarchspec(
+  variance.model = list(model = "eGARCH", garchOrder = c(1, 1)),
+  mean.model = list(armaOrder = c(1, 1), include.mean = TRUE),
+  distribution.model = "norm"
+)
+egarch_fit <- ugarchfit(spec = spec_egarch, data = spot_returns)
+cat("=== eGARCH(1,1) Model Fit for Spot Returns ===\n")
+print(egarch_fit)
+
+# ===================================================================
+# 8. Multi-variate Time Series Analysis: VAR / VECM
+# ===================================================================
+# Merge Spot and Futures Prices for cointegration test
+prices <- merge(spot, futures)
+colnames(prices) <- c("Spot", "Futures")
+prices <- na.omit(prices)
+
+# Johansen Cointegration Test to Check for Long-Run Relationships
+jotest <- ca.jo(prices, type = "trace", ecdet = "none", K = 2)
+cat("=== Johansen Cointegration Test ===\n")
+summary(jotest)
+
+# For demonstration, use a VAR model on returns.
+var_data <- merge(spot_returns, futures_returns)
+var_data <- na.omit(var_data)
+colnames(var_data) <- c("Spot_Returns", "Futures_Returns")
+
+# Select Optimal Lag Length for VAR
+lag_selection <- VARselect(var_data, lag.max = 10, type = "const")
+cat("=== VAR Lag Selection ===\n")
+print(lag_selection$selection)
+
+# Fit a VAR Model (using chosen lag, e.g., 2)
+var_model <- VAR(var_data, p = 2, type = "const")
+cat("=== VAR Model Summary ===\n")
+summary(var_model)
+
+# ===================================================================
+# 9. Value-at-Risk (VaR) Analysis
+# ===================================================================
+# Calculate VaR for Spot Returns at 95% Confidence Level
+VaR_spot_hist <- VaR(spot_returns, p = 0.95, method = "historical")
+cat("=== Historical VaR (95%) for Spot Returns ===\n")
+print(VaR_spot_hist)
+
+VaR_spot_gauss <- VaR(spot_returns, p = 0.95, method = "gaussian")
+cat("=== Gaussian VaR (95%) for Spot Returns ===\n")
+print(VaR_spot_gauss)
+
+# Visualize the Distribution of Returns with VaR Thresholds
+hist(spot_returns, breaks = 50, main = "Histogram of Spot Returns",
+     xlab = "Log Returns", col = "skyblue", border = "white")
+abline(v = as.numeric(VaR_spot_hist), col = "red", lwd = 2, lty = 2)
+abline(v = as.numeric(VaR_spot_gauss), col = "darkgreen", lwd = 2, lty = 2)
+legend("topright", legend = c("Historical VaR", "Gaussian VaR"),
+       col = c("red", "darkgreen"), lty = 2, lwd = 2)
+
+# ===================================================================
+# 10. Conclusion and Managerial Implications
+# ===================================================================
+cat("\nAnalysis complete")
+\end{lstlisting}
+
+\clearpage
+
+\section{Explanation of Outputs and Plots}
+\label{sec:explanations}
+
+This section elaborates on the R script outputs, detailing the significance of each step and the managerial insights to be drawn.
+
+\subsection{Descriptive Statistics}
+In the output for:
+\begin{verbatim}
+summary(spot)
+summary(futures)
+\end{verbatim}
+we observe the minimum, first quartile, median, mean, third quartile, and maximum of both spot and futures prices. The standard deviations (e.g., around 35.79 for spot and 400.40 for futures) indicate the extent of price variability over the chosen period.
+
+\subsection{Time Series Plots}
+\begin{itemize}
+    \item \textbf{Spot Price (GLD)}: 
+    \begin{verbatim}
+    chartSeries(spot, theme = chartTheme("white"), name = "Spot Price (GLD)")
+    \end{verbatim}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{spot_price.png} 
+\caption{Spot Price}
+\label{fig:example_image}
+\end{figure}
+
+    This plot shows the evolution of the GLD ETF over time.
+
+\newpage
+    \item \textbf{Futures Price (GC=F)}:
+    \begin{verbatim}
+    chartSeries(futures, theme = chartTheme("white"), name = "Futures Price (GC=F)")
+    \end{verbatim}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{future_price.png} 
+\caption{Futures Price}
+\label{fig:example_image}
+\end{figure}
+
+    The futures prices for gold are typically higher in magnitude, reflecting the contract specifications for gold futures.
+\end{itemize}
+
+\subsection{Returns Analysis}
+Log returns are computed via:
+\begin{verbatim}
+spot_returns <- na.omit(diff(log(spot)))
+futures_returns <- na.omit(diff(log(futures)))
+\end{verbatim}
+The output plots (Spot Returns, Futures Returns) typically reveal smaller amplitude fluctuations compared to raw prices and highlight volatility clusters.
+
+\subsubsection{Scatter Plot of Spot vs. Futures Returns}
+\begin{verbatim}
+ggplot(...) + ... # Scatter Plot
+\end{verbatim}
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=1\textwidth]{scatter.png}
+    \caption{Scatter Plot of Spot vs. Futures Returns}
+    \label{fig:enter-label}
+\end{figure}
+
+\newpage
+A positive correlation (about 0.877) is shown in the output, indicating that spot and futures returns move in the same direction most of the time.
+
+\subsection{Unit-Root Tests}
+We performed Augmented Dickey-Fuller (ADF) tests on \texttt{spot}, \texttt{futures}, \texttt{spot\_returns}, and \texttt{futures\_returns}. Typically, the results show:
+\begin{itemize}
+    \item Prices (spot/futures) are non-stationary (p-value $\approx 0.99$).
+    \item Returns are stationary (p-value $\approx 0.01$).
+\end{itemize}
+Stationarity in returns is consistent with standard financial theory that asset returns often behave like stationary processes, while prices themselves exhibit unit roots.
+
+\subsection{ARIMA Models and Forecasts}
+Both spot prices and spot returns were modeled. For instance:
+\begin{verbatim}
+spot_arima <- auto.arima(spot)
+spot_forecast <- forecast(spot_arima, h = 30)
+\end{verbatim}
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=1\textwidth]{spot_forecast.png}
+    \caption{ARIMA Forecast}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\begin{itemize}
+    \item \textbf{ARIMA for Spot Prices:} The model might be something like ARIMA(0,1,0) with a drift, indicating a random walk with drift.
+    \item \textbf{ARIMA for Spot Returns:} Often results in a very simple ARIMA(0,0,0) with a non-zero mean, suggesting minimal autocorrelation in returns.
+\end{itemize}
+
+\subsection{GARCH Modeling for Conditional Variance}
+Volatility was modeled through GARCH(1,1) and eGARCH(1,1). We used:
+\begin{verbatim}
+spec_garch <- ugarchspec(...)
+garch_fit <- ugarchfit(spec = spec_garch, data = spot_returns)
+\end{verbatim}
+And similarly for eGARCH.:
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=1\textwidth]{other_forecast.png}
+    \caption{GARCH Forecast}
+    \label{fig:enter-label}
+\end{figure}
+
+A GARCH(1,1) model often captures volatility clustering in returns. The parameter estimates (omega, alpha1, beta1, etc.) help identify how quickly volatility reacts and decays.
+
+\subsection{Multi-variate Time Series Analysis: VAR / VECM}
+For cointegration, a Johansen test (\texttt{ca.jo}) was applied:
+\begin{verbatim}
+jotest <- ca.jo(prices, type = "trace", ecdet = "none", K = 2)
+summary(jotest)
+\end{verbatim}
+If cointegration is present, a VECM is feasible. Otherwise, we use a VAR on returns. We fitted a VAR(2) model:
+\begin{verbatim}
+var_model <- VAR(var_data, p = 2, type = "const")
+\end{verbatim}
+The summary shows that \texttt{Spot\_Returns} is not heavily predictive of its own next step (low R-squared), but \texttt{Futures\_Returns} exhibits some relationship with lagged terms, implying there may be spillover effects in returns.
+
+\subsection{Value-at-Risk (VaR)}
+Finally, Value-at-Risk (VaR) was computed for spot returns using both historical and Gaussian methods at 95\% confidence:
+\begin{verbatim}
+VaR_spot_hist <- VaR(spot_returns, p = 0.95, method = "historical")
+VaR_spot_gauss <- VaR(spot_returns, p = 0.95, method = "gaussian")
+\end{verbatim}
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=1\textwidth]{histogram.png}
+    \caption{VaR Histogram}
+    \label{fig:enter-label}
+\end{figure}
+
+Comparing the historical and Gaussian VaR reveals whether the normal assumption under- or over-estimates the downside risk.
+
+\section{Conclusion and Managerial Implications}
+\label{sec:conclusion}
+In summary:
+\begin{itemize}
+    \item \textbf{Spot and Futures Prices} for Gold are both non-stationary, consistent with typical financial time series behavior.
+    \item \textbf{Returns} are stationary and positively correlated, suggesting common underlying market factors driving short-term price changes.
+    \item \textbf{ARIMA Models} indicate that a simple random walk (with drift) effectively characterizes the price, while returns often follow a white-noise-like process (no significant autocorrelation).
+    \item \textbf{GARCH Models} capture volatility clustering, an important phenomenon for managing risk and forecasting short-term market fluctuations.
+    \item \textbf{VAR Analysis} suggests that futures returns are somewhat predictable from their past values, reflecting possible market microstructure effects or lead-lag relationships.
+    \item \textbf{VaR Analysis} at 95\% confidence provides a measure of potential losses, enabling risk managers to set capital buffers or hedging strategies appropriately.
+\end{itemize}
+
+Managerial implications revolve around:
+\begin{itemize}
+    \item \textbf{Investment Strategy}: Forecasting gold prices can guide timing of entry/exit from positions and inform gold-based portfolio strategies.
+    \item \textbf{Hedging and Risk Management}: Understanding spot-futures relationships and volatility structure (via GARCH) aids in designing robust hedging strategies.
+    \item \textbf{Capital Requirements}: VaR estimates guide regulators and managers regarding the capital set aside to cover potential short-term losses.
+\end{itemize}
+
+\vspace{1em}
+\noindent
+
+\end{document}
+

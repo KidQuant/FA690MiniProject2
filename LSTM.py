@@ -1,8 +1,7 @@
 import numpy as np 
 import pandas as pd 
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_absolute_error
-from sklearn.metrics import mean_absolute_percentage_error
+from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, f1_score
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
@@ -10,8 +9,8 @@ import matplotlib.pyplot as plt
 # hyperparameters
 split = (0.85);
 sequence_length = 10;
-epochs = 10
-learning_rate = 0.02
+epochs = 15
+learning_rate = 0.01
 validation_split = 0.2  # 20% of training data for validation
 
 stock_data = pd.read_csv("data/price.csv")
@@ -80,6 +79,17 @@ def model_create():
 y_test = scaler.inverse_transform(y_test)
 
 
+def calculate_r2(y_true, y_pred, in_sample=True, benchmark=None):
+    if in_sample:
+        return 1 - (
+            np.sum((y_true - y_pred) ** 2) / np.sum((y_true - np.mean(y_true)) ** 2)
+        )
+    else:
+        if benchmark is None:
+            raise ValueError(
+                "Benchmark must be provided for out-of-sample R-squared calculation."
+            )
+        return 1 - (np.sum((y_true - y_pred) ** 2) / np.sum((y_true - benchmark) ** 2))
 
 # prediction on test set
 def predict(model):
@@ -90,32 +100,46 @@ def predict(model):
 
 # evaluation
 def evaluate(predictions):
+    # Existing metrics
     mae = mean_absolute_error(predictions, y_test)
     mape = mean_absolute_percentage_error(predictions, y_test)
-    return mae, mape, (1 - mape)
-
+    r2 = calculate_r2(y_test, predictions, in_sample=False, benchmark=0)
+    
+    # Convert predictions and actual values to binary classes (1 for increase, 0 for decrease)
+    y_pred_binary = np.where(np.diff(predictions.flatten()) > 0, 1, 0)
+    y_true_binary = np.where(np.diff(y_test.flatten()) > 0, 1, 0)
+    
+    # Calculate F1 score
+    f1 = f1_score(y_true_binary, y_pred_binary)
+    
+    return mae, mape, (1 - mape), r2, f1
 
 # trial runs
 def run_model(n):
-    total_mae = total_mape = total_acc = 0
+    total_mae = total_mape = total_acc = total_r2 = total_f1 = 0
     histories = []
+    global predictions
     for i in range(n):
         model, history = model_create()
         predictions = predict(model)
-        mae, mape, acc = evaluate(predictions)
+        mae, mape, acc, r2, f1 = evaluate(predictions)
         total_mae += mae
         total_mape += mape 
         total_acc += acc
+        total_r2 += r2
+        total_f1 += f1
         histories.append(history)
-    return (total_mae / n), (total_mape / n), (total_acc / n), predictions.tolist(), histories
+    return (total_mae / n), (total_mape / n), (total_acc / n), (total_r2 / n), (total_f1 / n), histories
 
-mae, mape, acc, preds, histories = run_model(1)
+# Run the model and get the histories
+mae, mape, acc, r2, f1, histories = run_model(1)
 
 print(f"Mean Absolute Error = {mae}")
 print(f"Mean Absolute Percentage Error = {mape}%")
 print(f"Accuracy = {acc}")
-
-
+print(f"R-squared = {r2}")
+print(f"F1 Score = {f1}")
+# Plot the final training and validation loss
 plt.figure(figsize=(10, 6))
 for i, history in enumerate(histories):
     plt.plot(history.history['loss'], label=f'Training Loss (Run {i+1})')
@@ -126,3 +150,4 @@ plt.ylabel('Loss')
 plt.legend()
 plt.grid(True)
 plt.show()
+# %%
