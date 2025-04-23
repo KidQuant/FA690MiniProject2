@@ -1,5 +1,9 @@
 # Mini Project 2 - Sentiment Analysis on Financial News
 
+## Project Report
+
+Full project report can be viewed ![here](https://github.com/KidQuant/FA690MiniProject2/blob/e52cc675121d4c2e5780d6c91fa38afce5c1af94/Mini%20Project%202%20-%20Financial%20News%20Sentiment%20Analysis.pdf).
+
 ## Background
 
 This project investigates the use of deep learning for sentiment analysis on financial news, focusing on transformer-based architectures like BERT and FinBERT. Leveraging both pre-trained and fine-tuned models, the team evaluates sentiment classification performance using financial news articles paired with corresponding stock return data. A dual-model approach was implemented, combining FinBERT for contextual understanding and VADER for lexical scoring. Multiple deep learning pipelines were explored, including fully connected neural networks (FCNN), Long Short-Term Memory (LSTM) networks, and a hybrid FinBERT-LSTM architecture. Fine-tuning was performed with hyperparameter variations across several BERT configurations, and performance was evaluated using metrics such as MSE, R², accuracy, and F1-score.
