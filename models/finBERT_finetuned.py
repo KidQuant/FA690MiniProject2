@@ -249,6 +249,31 @@ test_preds = trainer.predict(test_dataset)
 test_probs = 1 / (1 + np.exp(-test_preds.predictions))
 test_labels = test_preds.label_ids
 
+# Create sentiment predictions and scores
+test_predictions = np.where(test_probs > 0.5, 'Positive', 'Negative')
+sentiment_scores = np.where(test_probs > 0.5, test_probs, 1 - test_probs)
+
+# Create output dataframe
+predictions_df = pd.DataFrame({
+    'text': test_df['text'].values,
+    'true_label': test_labels,
+    'true_sentiment': np.where(test_labels > 0.5, 'Positive', 'Negative'),
+    'predicted_sentiment': test_predictions,
+    'sentiment_score': sentiment_scores
+})
+
+# Save predictions to CSV
+predictions_df.to_csv('test_predictions.csv', index=False)
+
+# Print sample predictions
+print("\nSample Sentiment Predictions:")
+for i in range(min(5, len(predictions_df))):
+    print(f"\nText: {predictions_df['text'].iloc[i][:200]}...")
+    print(f"True Sentiment: {predictions_df['true_sentiment'].iloc[i]}")
+    print(f"Predicted Sentiment: {predictions_df['predicted_sentiment'].iloc[i]}")
+    print(f"Sentiment Score: {predictions_df['sentiment_score'].iloc[i]:.2f}")
+    print("---")
+
 test_metrics = {
     "accuracy": accuracy_score(test_labels, (test_probs > 0.5).astype(int)),
     "mse": mean_squared_error(test_labels, test_probs),
@@ -257,3 +282,42 @@ test_metrics = {
 }
 print("\nTest Set Metrics:")
 print(test_metrics)
+
+news_df_test = news_df.loc[news_df['publication_datetime'] >= '2020-01-01'].copy()
+news_df_test.loc[:, 'sentiment'] = sentiment_scores
+
+# monthly sentiment
+news_df_test['publication_datetime'] = pd.to_datetime(news_df_test['publication_datetime'])
+monthly_sentiment = news_df_test.groupby(news_df_test['publication_datetime'].dt.to_period('M'))['sentiment'].mean().reset_index(name='sentiment')
+monthly_sentiment.columns = ['month', 'sentiment']
+
+
+def calculate_sp_return(month):
+    current_period = price_df.loc[
+        (price_df['Date'] >= month.start_time) & 
+        (price_df['Date'] < (month + 1).start_time) & 
+        (price_df['ticker'] == 'SPX')
+    ]
+    
+    next_period = price_df.loc[
+        (price_df['Date'] >= (month + 1).start_time) & 
+        (price_df['Date'] < (month + 2).start_time) & 
+        (price_df['ticker'] == 'SPX')
+    ]
+    
+    if not current_period.empty and not next_period.empty:
+        return (current_period['close'].iloc[-1] / next_period['close'].iloc[-1]) - 1
+    else:
+        return None
+
+monthly_sentiment['SP_return'] = monthly_sentiment['month'].apply(calculate_sp_return)
+
+# scatterplot
+plt.figure(figsize=(10, 6))
+plt.scatter(monthly_sentiment['sentiment'], monthly_sentiment['SP_return'], color='blue', alpha=0.5)
+plt.title('Scatter Plot of Sentiment vs. S&P 500 Return')
+plt.xlabel('Sentiment')
+plt.ylabel('S&P 500 Return')
+plt.grid(True)
+plt.axhline(0, color='red', linestyle='--')  # Add a horizontal line at y=0 for reference
+plt.show()

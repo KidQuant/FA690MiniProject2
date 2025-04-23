@@ -1,0 +1,39 @@
+Step 2415: Eval Loss: 0.6965 
+
+Test Set Results:
+{'eval_loss': 0.6964719295501709, 'eval_accuracy': 0.49672935404742435, 'eval_mse': 0.2516446113586426, 'eval_runtime': 6.5023, 'eval_samples_per_second': 752.344, 'eval_steps_per_second': 47.06, 'epoch': 15.0}
+
+Sample Sentiment Predictions:
+
+Text: A Penny Saved Is a Latte Earned The other day I opened my trading account and discovered an unexpected Christmas present -- a $30 dividend payment for shares of Hilton Worldwide Holdings I purchased i...
+True Sentiment: Positive
+Predicted Sentiment: Positive
+Sentiment Score: 0.50
+---
+
+Text: Business News: PG&E Wins a Round in Court Battle A committee of bondholders including Elliott Management Corp. and Pacific Investment Management Co. argued they were owed accrued interest at the origi...
+True Sentiment: Negative
+Predicted Sentiment: Positive
+Sentiment Score: 0.54
+---
+
+Text: Google AI for Breast Cancer Shows Promise The model is the latest step in Google's push into health care. The Alphabet Inc. company has developed similar systems to detect lung cancer, eye disease and...
+True Sentiment: Positive
+Predicted Sentiment: Positive
+Sentiment Score: 0.51
+---
+
+Text: Business News: Tesla Looks to China for Growth --- As U.S. tax breaks fade, auto maker focuses on local production in growing market China, the world's largest new-car market, is becoming important in...
+True Sentiment: Positive
+Predicted Sentiment: Negative
+Sentiment Score: 0.52
+---
+
+Text: Boeing's Commitment To Automation Grows Now, such changes seek to address the fact that pilots might not react to problems -- including those tied to automation -- as quickly or proficiently as design...
+True Sentiment: Positive
+Predicted Sentiment: Negative
+Sentiment Score: 0.50
+---
+
+Test Set Metrics:
+{'accuracy': 0.49672935404742435, 'mse': 0.2516446113586426, 'r2': -0.006750702857971191, 'f1': 0.5970540098199673}
