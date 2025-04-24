@@ -2,7 +2,7 @@
 
 ## Project Report
 
-Full project report can be viewed ![here](https://github.com/KidQuant/FA690MiniProject2/blob/e52cc675121d4c2e5780d6c91fa38afce5c1af94/Mini%20Project%202%20-%20Financial%20News%20Sentiment%20Analysis.pdf).
+Full project report can be viewed [here](https://github.com/KidQuant/FA690MiniProject2/blob/e52cc675121d4c2e5780d6c91fa38afce5c1af94/Mini%20Project%202%20-%20Financial%20News%20Sentiment%20Analysis.pdf).
 
 ## Background
 
